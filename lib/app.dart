@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tarea3/pages.dart';
+import 'package:tarea3/presentacion/catalogo.dart';
 import 'package:tarea3/presentacion/home.dart';
 
 class App extends StatelessWidget {
@@ -14,7 +15,7 @@ class App extends StatelessWidget {
       initialRoute: Paginas.homeRoute,
       routes: {
         Paginas.homeRoute: (_) => const Home(),
-        //Paginas.catalogRoute: (_) => const CatalogPage(),
+        Paginas.catalogRoute: (_) => const Catalogo(),
       },
     );
   }

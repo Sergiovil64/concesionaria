@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tarea3/aplicacion/riverpod.dart';
 import 'package:tarea3/dominio/oferta_auto.dart';
+import 'package:tarea3/pages.dart';
 import 'package:tarea3/presentacion/card_auto.dart';
 
 class Home extends ConsumerWidget {
@@ -29,9 +30,7 @@ class Home extends ConsumerWidget {
                 padding: EdgeInsets.symmetric(vertical: 24),
                 child: Center(
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Lógica para ver catálogo completo
-                    },
+                    onPressed: () => Navigator.pushNamed(context, Paginas.catalogRoute),
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                       shape: RoundedRectangleBorder(

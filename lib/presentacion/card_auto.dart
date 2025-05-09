@@ -40,6 +40,29 @@ class CardAuto extends StatelessWidget {
                 left: 10,
                 child: ofertaSpecial ? AnimatedSticker(texto: textoOferta,) : SizedBox(),
               ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: GestureDetector(
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.white
+                    ),
+                    child: Icon(Icons.add_shopping_cart, color: Colors.red.shade400, shadows: [Shadow(color: Colors.black, offset: Offset(0.3, 0.3))],)
+                  ),
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Se agregó al carrito'),
+                        duration: Duration(seconds: 5),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
           Padding(
