@@ -1,27 +1,31 @@
 
 
-import 'package:tarea3/dominio/oferta_auto.dart';
+import 'package:tarea3/dominio/auto.dart';
 
 class ContainerState {
-  final List<OfertaAuto> vOfertaAutos;
-  final List<OfertaAuto> vListaFiltradaAutos;
+  final List<Auto> vOfertaAutos;
+  final List<Auto> vListaFiltradaAutos;
+  final List<Auto> vAutosCarrito;
   String vBusquedaOferta;
 
   ContainerState({
     required this.vOfertaAutos,
     required this.vBusquedaOferta,
-    required this.vListaFiltradaAutos
+    required this.vListaFiltradaAutos,
+    required this.vAutosCarrito
   });
 
   ContainerState copyWith({
-    List<OfertaAuto>? vOfertaAutos,
+    List<Auto>? vOfertaAutos,
     String? vBusquedaOferta,
-    List<OfertaAuto>? vListaFiltradaAutos,
+    List<Auto>? vListaFiltradaAutos,
+    List<Auto>? vAutosCarrito,
   }) {
     return ContainerState(
-          vOfertaAutos: vOfertaAutos ?? this.vOfertaAutos,
-          vBusquedaOferta: vBusquedaOferta ?? this.vBusquedaOferta,
-          vListaFiltradaAutos: vListaFiltradaAutos ?? this.vListaFiltradaAutos
+      vOfertaAutos: vOfertaAutos ?? this.vOfertaAutos,
+      vBusquedaOferta: vBusquedaOferta ?? this.vBusquedaOferta,
+      vListaFiltradaAutos: vListaFiltradaAutos ?? this.vListaFiltradaAutos,
+      vAutosCarrito: vAutosCarrito ?? this.vAutosCarrito
     );
   }
 }

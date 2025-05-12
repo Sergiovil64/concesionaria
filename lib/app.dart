@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tarea3/pages.dart';
 import 'package:tarea3/presentacion/catalogo.dart';
+import 'package:tarea3/presentacion/cotizacion.dart';
 import 'package:tarea3/presentacion/home.dart';
 
 class App extends StatelessWidget {
@@ -12,10 +13,11 @@ class App extends StatelessWidget {
       title: 'Concesionaria Motors',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      initialRoute: Paginas.homeRoute,
+      initialRoute: Paginas.home,
       routes: {
-        Paginas.homeRoute: (_) => const Home(),
-        Paginas.catalogRoute: (_) => const Catalogo(),
+        Paginas.home: (_) => const Home(),
+        Paginas.catalogo: (_) => const Catalogo(),
+        Paginas.cotizacion: (_) => const Cotizacion(),
       },
     );
   }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tarea3/dominio/oferta_auto.dart';
+import 'package:tarea3/dominio/auto.dart';
 import 'package:tarea3/presentacion/animated_sticker.dart';
+import 'package:tarea3/presentacion/ver_detalles.dart';
 
 class CardAuto extends StatelessWidget {
-  final OfertaAuto tarjetaAuto;
+  final Auto tarjetaAuto;
   final bool ofertaSpecial;
   final String textoOferta;
 
@@ -84,7 +85,7 @@ class CardAuto extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Aquí iría la lógica para ver detalles o comprar
+                      verDetalleAuto(context, tarjetaAuto);
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(

@@ -1,4 +1,5 @@
 abstract class Paginas {
-  static const homeRoute    = '/home';
-  static const catalogRoute = '/catalog';
+  static const home    = '/home';
+  static const catalogo = '/catalogo';
+  static const cotizacion = '/cotizacion';
 }

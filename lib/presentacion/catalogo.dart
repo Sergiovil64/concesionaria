@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tarea3/aplicacion/riverpod.dart';
+import 'package:tarea3/presentacion/ver_detalles.dart';
 
 class Catalogo extends ConsumerWidget {
   const Catalogo({Key? key}) : super(key: key);
@@ -60,18 +61,30 @@ class Catalogo extends ConsumerWidget {
                             leading: Image.asset(car.imagenUrl, width: 72, fit: BoxFit.cover),
                             title: Text(car.nombre),
                             subtitle: Text(car.precio),
-                            trailing: IconButton(
-                              icon: Icon(Icons.add_shopping_cart,color: Colors.red),
-                              onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Se agregó al carrito'),
-                                    duration: Duration(seconds: 5),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                              },
-                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.info, color: Colors.grey),
+                                  onPressed: () =>
+                                      verDetalleAuto(context, car),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.add_shopping_cart,
+                                      color: Colors.red),
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                      SnackBar(
+                                        content: Text('Se agregó al carrito', style: TextStyle(color: Colors.white)),
+                                        duration: Duration(seconds: 5),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            )
                           )
                         );
                       },
