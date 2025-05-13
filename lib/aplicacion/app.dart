@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tarea3/pages.dart';
+import 'package:tarea3/aplicacion/pages.dart';
 import 'package:tarea3/presentacion/catalogo.dart';
 import 'package:tarea3/presentacion/cotizacion.dart';
 import 'package:tarea3/presentacion/home.dart';

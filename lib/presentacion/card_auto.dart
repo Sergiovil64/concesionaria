@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tarea3/aplicacion/riverpod.dart';
 import 'package:tarea3/dominio/auto.dart';
 import 'package:tarea3/presentacion/animated_sticker.dart';
 import 'package:tarea3/presentacion/ver_detalles.dart';
 
-class CardAuto extends StatelessWidget {
+class CardAuto extends ConsumerWidget {
   final Auto tarjetaAuto;
   final bool ofertaSpecial;
   final String textoOferta;
@@ -17,7 +19,7 @@ class CardAuto extends StatelessWidget {
 
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       elevation: 4,
       margin: EdgeInsets.only(bottom: 16),
@@ -54,6 +56,8 @@ class CardAuto extends StatelessWidget {
                     child: Icon(Icons.add_shopping_cart, color: Colors.red.shade400, shadows: [Shadow(color: Colors.black, offset: Offset(0.3, 0.3))],)
                   ),
                   onTap: () {
+                    // Agregando al carrito
+                    final agregado = ref.read(containerProvider.notifier).agregarCarrito(tarjetaAuto);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Se agregó al carrito'),

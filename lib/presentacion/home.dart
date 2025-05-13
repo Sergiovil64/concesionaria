@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tarea3/aplicacion/riverpod.dart';
 import 'package:tarea3/dominio/auto.dart';
-import 'package:tarea3/pages.dart';
+import 'package:tarea3/aplicacion/pages.dart';
 import 'package:tarea3/presentacion/card_auto.dart';
 
 class Home extends ConsumerWidget {
@@ -11,6 +11,8 @@ class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final containerState = ref.watch(containerProvider);
+    ref.read(containerProvider.notifier).insertarAutos();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -19,7 +21,7 @@ class Home extends ConsumerWidget {
         ),
         backgroundColor: Colors.redAccent.shade200,
       ),
-      body: Container(
+      body: containerState.loading ? Center(child: CircularProgressIndicator()) : Container(
         color: Colors.red.shade100,
         child: ListView.builder(
           padding: EdgeInsets.all(16),

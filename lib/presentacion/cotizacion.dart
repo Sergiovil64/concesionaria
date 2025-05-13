@@ -28,6 +28,7 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
   final _nombreController        = TextEditingController();
   final _emailController         = TextEditingController();
   final _ciudadController        = TextEditingController();
+  final _phoneController         = TextEditingController();
 
   @override
   void dispose() {
@@ -35,6 +36,7 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
     _precioApproxController.dispose();
     _nombreController.dispose();
     _emailController.dispose();
+    _phoneController.dispose();
     _ciudadController.dispose();
     super.dispose();
   }
@@ -73,20 +75,22 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
               if (containerState.vAutosCarrito.isEmpty)
                 Text('No hay artículos en el carrito.')
               else
-                ...containerState.vAutosCarrito.map((car) => ListTile(
-                      tileColor: Colors.white,
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: Image.asset(car.imagenUrl,
-                            width: 48, height: 32, fit: BoxFit.cover),
+                ...containerState.vAutosCarrito.map((car) => Container(
+                  color: Colors.white,
+                  child: ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: Image.asset(car.imagenUrl,
+                              width: 48, height: 32, fit: BoxFit.cover),
+                        ),
+                        title: Text(car.nombre),
+                        trailing: Text(car.precio),
                       ),
-                      title: Text(car.nombre),
-                      trailing: Text(car.precio),
-                    )),
+                )),
               const SizedBox(height: 8),
               Text('Total: \$${total.toString()}', 
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-              const Divider(height: 32),
+              const Divider(height: 32, color: Colors.black,),
         
               Text('Cotiza con tu auto como parte de pago',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -113,8 +117,23 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
                 focusNode: AlwaysDisabledFocusNode(),
                 enableInteractiveSelection: false,
                 decoration: InputDecoration(
-                  labelText: 'Modelo',
-                  border: OutlineInputBorder(),
+                  hintText: 'Modelo',
+                  hintStyle: TextStyle(color: Colors.redAccent.shade700),
+                  filled: true,
+                  fillColor: Colors.white,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+                  ),
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -126,9 +145,24 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
                 enableInteractiveSelection: false,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Precio aproximado',
+                  hintText: 'Precio aproximado',
                   prefixText: '\$',
-                  border: OutlineInputBorder(),
+                  hintStyle: TextStyle(color: Colors.redAccent.shade700),
+                  filled: true,
+                  fillColor: Colors.white,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+                  ),
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
                 ),
               ),
               const Divider(height: 32),
@@ -139,8 +173,23 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
               TextField(
                 controller: _nombreController,
                 decoration: InputDecoration(
-                  labelText: 'Nombre de cliente',
-                  border: OutlineInputBorder(),
+                  hintText: 'Nombre de cliente',
+                  hintStyle: TextStyle(color: Colors.redAccent.shade700),
+                  filled: true,
+                  fillColor: Colors.white,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+                  ),
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -148,16 +197,70 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  labelText: 'Correo electrónico',
-                  border: OutlineInputBorder(),
+                  hintText: 'Correo electrónico',
+                  hintStyle: TextStyle(color: Colors.redAccent.shade700),
+                  filled: true,
+                  fillColor: Colors.white,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+                  ),
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  hintText: 'Teléfono',
+                  hintStyle: TextStyle(color: Colors.redAccent.shade700),
+                  filled: true,
+                  fillColor: Colors.white,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+                  ),
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _ciudadController,
                 decoration: InputDecoration(
-                  labelText: 'Ciudad',
-                  border: OutlineInputBorder(),
+                  hintText: 'Ciudad',
+                  hintStyle: TextStyle(color: Colors.redAccent.shade700),
+                  filled: true,
+                  fillColor: Colors.white,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+                  ),
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.red.shade300),
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
@@ -178,7 +281,7 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
                     ),
                     backgroundColor: Colors.red
                   ),
-                  child: Text('Solicita Promotor'),
+                  child: Text('Solicita Promotor', style: TextStyle(color: Colors.white, fontSize: 18),),
                 ),
               ),
             ],

@@ -54,25 +54,27 @@ class Catalogo extends ConsumerWidget {
                   : ListView.builder(
                       itemCount: containerState.vListaFiltradaAutos.length,
                       itemBuilder: (_, i) {
-                        final car = containerState.vListaFiltradaAutos[i];
+                        final auto = containerState.vListaFiltradaAutos[i];
                         return Card(
                           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           child: ListTile(
-                            leading: Image.asset(car.imagenUrl, width: 72, fit: BoxFit.cover),
-                            title: Text(car.nombre),
-                            subtitle: Text(car.precio),
+                            leading: Image.asset(auto.imagenUrl, width: 72, fit: BoxFit.cover),
+                            title: Text(auto.nombre),
+                            subtitle: Text(auto.precio),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
                                   icon: Icon(Icons.info, color: Colors.grey),
                                   onPressed: () =>
-                                      verDetalleAuto(context, car),
+                                      verDetalleAuto(context, auto),
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.add_shopping_cart,
                                       color: Colors.red),
                                   onPressed: () {
+                                    // Agregando al carrito
+                                    final agregado = ref.read(containerProvider.notifier).agregarCarrito(auto);
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(
                                       SnackBar(

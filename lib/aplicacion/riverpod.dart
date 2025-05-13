@@ -1,77 +1,51 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tarea3/aplicacion/estados.dart';
+import 'package:tarea3/data/db_auto.dart';
 import 'package:tarea3/dominio/auto.dart';
 
 class ContainerNotifier extends StateNotifier<ContainerState> {
   ContainerNotifier() 
     : super(ContainerState(
-      vOfertaAutos: listobtenerAutosOferta(),
+      vListaCompleta: [],
+      vOfertaAutos: [],
       vBusquedaOferta: "",
       vListaFiltradaAutos: listaCompletaAutos(),
-      vAutosCarrito: listaCarrito()
+      vAutosCarrito: [],
+      loading: true
     ));
 
-  void filtrarListaCatalogo(String busqueda) {
+  void agregarCarrito(Auto auto) {
+    print('Entrando...');
+    state = state.copyWith(vAutosCarrito: [...state.vAutosCarrito, auto]);
+  }
+
+  Future<void> filtrarListaCatalogo(String busqueda) async {
     state = state.copyWith(
       vBusquedaOferta: busqueda,
       vListaFiltradaAutos: 
-        listaCompletaAutos().where((c) => c.nombre.toLowerCase().contains(busqueda)).toList()
+        state.vListaCompleta.where((c) => c.nombre.toLowerCase().contains(busqueda)).toList()
     );
+  }
+
+  Future<List<Auto>> insertarAutos() async {
+    final db = DBAuto();
+    final existenAutos = await db.getAllCars();
+    if (existenAutos.isEmpty) {
+      final autos = listaCompletaAutos();
+      for(final auto in autos) {
+        await db.insertCar(auto);
+      }
+    }
+    final listaFinal = await db.getAllCars();
+    final List<Auto> autosEnOferta = (listaFinal.where((auto) => auto.enOferta)).toList();
+    state = state.copyWith(vListaCompleta: listaFinal, loading: false, vOfertaAutos: autosEnOferta);
+    return listaFinal;
   }
 }
 
 final containerProvider = StateNotifierProvider<ContainerNotifier, ContainerState>(
   (ref) => ContainerNotifier()
 );
-
-List<Auto> listaCarrito() {
-  return [
-    Auto(
-      nombre: 'Tesla Model S', 
-      imagenUrl: 'assets/images/tesla-s.png', 
-      precio: '\$80,000',
-      motor: 'Electric Dual Motor',
-      alto: '1.44 m',
-      ancho: '1.96 m',
-      largo: '4.97 m',
-      colores: ['Negro', 'Blanco', 'Rojo'],
-    ),
-  ];
-}
-List<Auto> listobtenerAutosOferta() {
-  return [
-    Auto(
-      nombre: 'Tesla Model S', 
-      imagenUrl: 'assets/images/tesla-s.png', 
-      precio: '\$80,000',
-      motor: 'Electric Dual Motor',
-      alto: '1.44 m',
-      ancho: '1.96 m',
-      largo: '4.97 m',
-      colores: ['Negro', 'Blanco', 'Rojo'],
-    ),
-    Auto(
-      nombre: 'BMW Serie 3',
-      imagenUrl: 'assets/images/bmw-3.png',
-      precio: '\$45,000',
-      motor: '2.0L Turbo Inline-4',
-      alto: '1.44 m',
-      ancho: '1.83 m',
-      largo: '4.71 m',
-      colores: ['Blanco', 'Negro', 'Gris'],
-    ),
-    Auto(
-      nombre: 'Audi A4',
-      imagenUrl: 'assets/images/audi-a4.jpg',
-      precio: '\$50,000',
-      motor: '2.0L Turbo Inline-4',
-      alto: '1.42 m',
-      ancho: '1.84 m',
-      largo: '4.73 m',
-      colores: ['Gris', 'Negro', 'Blanco'],
-    ),
-  ];
-}
 
 List<Auto> listaCompletaAutos() {
   return [
@@ -83,6 +57,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.44 m',
       ancho: '1.96 m',
       largo: '4.97 m',
+      enOferta: true,
       colores: ['Negro', 'Blanco', 'Rojo'],
     ),
     Auto(
@@ -93,6 +68,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.44 m',
       ancho: '1.85 m',
       largo: '4.69 m',
+      enOferta: false,
       colores: ['Blanco', 'Negro', 'Azul'],
     ),
     Auto(
@@ -103,6 +79,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.68 m',
       ancho: '2.07 m',
       largo: '5.04 m',
+      enOferta: true,
       colores: ['Blanco', 'Gris', 'Negro'],
     ),
     Auto(
@@ -113,6 +90,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.62 m',
       ancho: '1.92 m',
       largo: '4.75 m',
+      enOferta: false,
       colores: ['Blanco', 'Negro', 'Rojo'],
     ),
     Auto(
@@ -123,6 +101,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.38 m',
       ancho: '1.91 m',
       largo: '4.78 m',
+      enOferta: false,
       colores: ['Rojo', 'Negro', 'Amarillo'],
     ),
     Auto(
@@ -133,6 +112,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.34 m',
       ancho: '1.90 m',
       largo: '4.78 m',
+      enOferta: false,
       colores: ['Azul', 'Negro', 'Blanco'],
     ),
     Auto(
@@ -143,6 +123,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.44 m',
       ancho: '1.83 m',
       largo: '4.71 m',
+      enOferta: true,
       colores: ['Blanco', 'Negro', 'Gris'],
     ),
     Auto(
@@ -153,6 +134,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.48 m',
       ancho: '1.87 m',
       largo: '4.94 m',
+      enOferta: false,
       colores: ['Blanco', 'Azul', 'Negro'],
     ),
     Auto(
@@ -163,6 +145,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.42 m',
       ancho: '1.84 m',
       largo: '4.73 m',
+      enOferta: true,
       colores: ['Gris', 'Negro', 'Blanco'],
     ),
     Auto(
@@ -173,6 +156,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.66 m',
       ancho: '1.89 m',
       largo: '4.66 m',
+      enOferta: false,
       colores: ['Negro', 'Blanco', 'Rojo'],
     ),
     Auto(
@@ -183,6 +167,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.44 m',
       ancho: '1.81 m',
       largo: '4.69 m',
+      enOferta: false,
       colores: ['Negro', 'Blanco', 'Plateado'],
     ),
     Auto(
@@ -193,6 +178,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.46 m',
       ancho: '1.85 m',
       largo: '4.92 m',
+      enOferta: false,
       colores: ['Blanco', 'Negro', 'Azul'],
     ),
     Auto(
@@ -203,6 +189,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.44 m',
       ancho: '1.84 m',
       largo: '4.88 m',
+      enOferta: false,
       colores: ['Blanco', 'Negro', 'Gris'],
     ),
     Auto(
@@ -213,6 +200,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.41 m',
       ancho: '1.80 m',
       largo: '4.52 m',
+      enOferta: false,
       colores: ['Rojo', 'Negro', 'Azul'],
     ),
     Auto(
@@ -223,6 +211,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.45 m',
       ancho: '1.86 m',
       largo: '4.90 m',
+      enOferta: false,
       colores: ['Blanco', 'Negro', 'Gris'],
     ),
     Auto(
@@ -233,6 +222,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.45 m',
       ancho: '1.79 m',
       largo: '4.28 m',
+      enOferta: false,
       colores: ['Blanco', 'Rojo', 'Negro'],
     ),
     Auto(
@@ -243,6 +233,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.30 m',
       ancho: '1.85 m',
       largo: '4.52 m',
+      enOferta: false,
       colores: ['Negro', 'Blanco', 'Azul'],
     ),
     Auto(
@@ -253,6 +244,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.17 m',
       ancho: '2.03 m',
       largo: '4.52 m',
+      enOferta: false,
       colores: ['Amarillo', 'Negro', 'Naranja'],
     ),
     Auto(
@@ -263,6 +255,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.21 m',
       ancho: '1.97 m',
       largo: '4.61 m',
+      enOferta: false,
       colores: ['Rojo', 'Negro', 'Blanco'],
     ),
     Auto(
@@ -273,6 +266,7 @@ List<Auto> listaCompletaAutos() {
       alto: '1.21 m',
       ancho: '2.05 m',
       largo: '4.50 m',
+      enOferta: false,
       colores: ['Naranja', 'Negro', 'Plateado'],
     ),
   ];
