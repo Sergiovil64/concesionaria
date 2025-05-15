@@ -13,6 +13,12 @@ class DBAuto {
     return rows.map((m) => Auto.fromMap(m)).toList();
   }
 
+  Future<List<Auto>> getCarsByyName(String nombre) async {
+    final database = await DatabaseHelper().db;
+    final rows = await database.query('autos', where: 'nombre like ?', whereArgs: ["%$nombre%"]);
+    return rows.map((m) => Auto.fromMap(m)).toList();
+  }
+
   Future<int> deleteAllCars() async {
     final database = await DatabaseHelper().db;
     return await database.delete('autos');

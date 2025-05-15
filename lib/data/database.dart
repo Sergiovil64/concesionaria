@@ -18,14 +18,21 @@ class DatabaseHelper {
     final path = join(await getDatabasesPath(), 'concesionaria.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 3,
       onCreate: _onCreate,
+      onUpgrade: (db, oldV, newV) async {
+      if (newV > oldV) {
+        await db.execute('DROP TABLE IF EXISTS cars;');
+        await db.execute('DROP TABLE IF EXISTS promoter_requests;');
+        await _onCreate(db, newV);
+      }
+  },
     );
   }
 
   FutureOr<void> _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE autos (
+      CREATE TABLE IF NOT EXISTS autos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nombre TEXT,
         imagenUrl TEXT,
@@ -39,11 +46,12 @@ class DatabaseHelper {
       );
     ''');
     await db.execute('''
-      CREATE TABLE solicitud_promotores (
+      CREATE TABLE IF NOT EXISTS solicitud_promotores (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         clienteNombre TEXT,
         clienteEmail TEXT,
         clienteCiudad TEXT,
+        clienteCelular TEXT,
         fecha DATE
       );
     ''');

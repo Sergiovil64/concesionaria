@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tarea3/aplicacion/estados.dart';
 import 'package:tarea3/data/db_auto.dart';
+import 'package:tarea3/data/db_promotor.dart';
 import 'package:tarea3/dominio/auto.dart';
+import 'package:tarea3/dominio/promotor.dart';
 
 class ContainerNotifier extends StateNotifier<ContainerState> {
   ContainerNotifier() 
@@ -11,19 +13,27 @@ class ContainerNotifier extends StateNotifier<ContainerState> {
       vBusquedaOferta: "",
       vListaFiltradaAutos: listaCompletaAutos(),
       vAutosCarrito: [],
-      loading: true
+      loading: true,
+      modeloAutoIA: '',
+      precioAutoIA: '',
+      imagenCamara: ''
     ));
 
-  void agregarCarrito(Auto auto) {
-    print('Entrando...');
-    state = state.copyWith(vAutosCarrito: [...state.vAutosCarrito, auto]);
+  int agregarCarrito(Auto auto) {
+    final agregado = state.vAutosCarrito.where((autosDeCarrito) => autosDeCarrito.nombre.contains(auto.nombre)).toList();
+    if (agregado.isEmpty) {
+      state = state.copyWith(vAutosCarrito: [...state.vAutosCarrito, auto]);
+      return 1;
+    }
+    return 0;
   }
 
   Future<void> filtrarListaCatalogo(String busqueda) async {
+    final db = DBAuto();
     state = state.copyWith(
       vBusquedaOferta: busqueda,
       vListaFiltradaAutos: 
-        state.vListaCompleta.where((c) => c.nombre.toLowerCase().contains(busqueda)).toList()
+        busqueda.isNotEmpty ? await db.getCarsByyName(busqueda) : await db.getAllCars()
     );
   }
 
@@ -40,6 +50,15 @@ class ContainerNotifier extends StateNotifier<ContainerState> {
     final List<Auto> autosEnOferta = (listaFinal.where((auto) => auto.enOferta)).toList();
     state = state.copyWith(vListaCompleta: listaFinal, loading: false, vOfertaAutos: autosEnOferta);
     return listaFinal;
+  }
+
+  Future<int> insertarSolicitud(SolicitudPromotor solicitud) async {
+      final db = DBPromotor();
+      return await db.insertarSolicitud(solicitud);
+  }
+
+  void guardarImagen(String img) {
+    state = state.copyWith(imagenCamara: img);
   }
 }
 

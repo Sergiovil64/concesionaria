@@ -9,6 +9,9 @@ class ContainerState {
   final List<Auto> vAutosCarrito;
   String vBusquedaOferta;
   bool loading;
+  String modeloAutoIA;
+  String precioAutoIA;
+  String imagenCamara;
 
   ContainerState({
     required this. vListaCompleta,
@@ -16,7 +19,10 @@ class ContainerState {
     required this.vBusquedaOferta,
     required this.vListaFiltradaAutos,
     required this.vAutosCarrito,
-    required this.loading
+    required this.loading,
+    required this.modeloAutoIA,
+    required this.precioAutoIA,
+    required this.imagenCamara
   });
 
   ContainerState copyWith({
@@ -25,7 +31,10 @@ class ContainerState {
     String? vBusquedaOferta,
     List<Auto>? vListaFiltradaAutos,
     List<Auto>? vAutosCarrito,
-    bool? loading
+    bool? loading,
+    String? modeloAutoIA,
+    String? precioAutoIA,
+    String? imagenCamara
   }) {
     return ContainerState(
       vListaCompleta: vListaCompleta ?? this.vListaCompleta,
@@ -33,7 +42,10 @@ class ContainerState {
       vBusquedaOferta: vBusquedaOferta ?? this.vBusquedaOferta,
       vListaFiltradaAutos: vListaFiltradaAutos ?? this.vListaFiltradaAutos,
       vAutosCarrito: vAutosCarrito ?? this.vAutosCarrito,
-      loading: loading ?? this.loading
+      loading: loading ?? this.loading,
+      modeloAutoIA: modeloAutoIA ?? this.modeloAutoIA,
+      precioAutoIA: precioAutoIA ?? this.precioAutoIA,
+      imagenCamara: imagenCamara ?? this.imagenCamara
     );
   }
 }

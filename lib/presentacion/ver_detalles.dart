@@ -73,27 +73,6 @@ Future<void> verDetalleAuto(BuildContext context, Auto car) async {
                     child: Text('Agregar a carrito'),
                   ),
                 ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Solicitud enviada correctamente', style: TextStyle(color: Colors.white)),
-                          duration: Duration(seconds: 5),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                    ),
-                    child: Text('Solicitar promotor'),
-                  ),
-                ),
               ],
             ),
             SizedBox(height: 24),

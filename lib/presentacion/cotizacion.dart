@@ -1,60 +1,54 @@
 // lib/pages/cotizacion_page.dart
 
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tarea3/aplicacion/riverpod.dart';
+import 'package:tarea3/data/consultas_ia.dart';
+import 'package:tarea3/dominio/promotor.dart';
 
-class Cotizacion extends ConsumerStatefulWidget {
+class Cotizacion extends ConsumerWidget {
   const Cotizacion({Key? key}) : super(key: key);
-
+  
   @override
-  ConsumerState<Cotizacion> createState() => _CotizacionState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ImagePicker picker = ImagePicker();
 
-class AlwaysDisabledFocusNode extends FocusNode {
-  @override
-  bool get canRequestFocus => false;
-}
+    final nombreController        = TextEditingController();
+    final emailController         = TextEditingController();
+    final ciudadController        = TextEditingController();
+    final phoneController         = TextEditingController();
 
-class _CotizacionState extends ConsumerState<Cotizacion> {
-  final ImagePicker _picker = ImagePicker();
-  File? _tradeInImage;
-
-  final _modeloController        = TextEditingController();
-  final _precioApproxController  = TextEditingController();
-  final _nombreController        = TextEditingController();
-  final _emailController         = TextEditingController();
-  final _ciudadController        = TextEditingController();
-  final _phoneController         = TextEditingController();
-
-  @override
-  void dispose() {
-    _modeloController.dispose();
-    _precioApproxController.dispose();
-    _nombreController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _ciudadController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _pickTradeInImage() async {
-    final XFile? img = await _picker.pickImage(source: ImageSource.camera);
-    if (img != null) {
-      setState(() => _tradeInImage = File(img.path));
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final containerState = ref.watch(containerProvider);
     final total = containerState.vAutosCarrito.fold<int>(0, (sum, car) {
       final digits = car.precio.replaceAll(RegExp(r'[^\d]'), '');
       return sum + int.parse(digits);
     });
+
+      Future<void> pickTradeInImage() async {
+        final XFile? img = await picker.pickImage(source: ImageSource.camera);
+        if (img == null) return;
+        ref.read(containerProvider.notifier).guardarImagen(img.path);
+        final bytes = await img.readAsBytes();
+        final b64   = base64Encode(bytes);
+
+        bool esVehiculo = await ConsultaIA.esVehiculo(b64);
+        if (!esVehiculo) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("No es un vehículo.")),
+          );
+          return;
+        }
+
+        final modeloPrecio = await ConsultaIA.obtenerModeloPrecio(b64);
+        containerState.modeloAutoIA = modeloPrecio[0];
+        containerState.precioAutoIA = modeloPrecio[1];
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Vehículo reconocido: ${modeloPrecio[0]}; Precio estimado: ${modeloPrecio[1]}"), duration: Duration(seconds: 10),),
+        );
+      }
 
     return Scaffold(
       appBar: AppBar(
@@ -92,86 +86,31 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               const Divider(height: 32, color: Colors.black,),
         
-              Text('Cotiza con tu auto como parte de pago',
+              Text('Cotiza con tu auto como parte de pago subiendo una fotografia',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
               Center(
                 child: GestureDetector(
-                  onTap: _pickTradeInImage,
+                  onTap: pickTradeInImage,
                   child: CircleAvatar(
                     radius: 40,
                     backgroundColor: Colors.grey[200],
                     backgroundImage:
-                        _tradeInImage != null ? FileImage(_tradeInImage!) : null,
-                    child: _tradeInImage == null
+                        containerState.imagenCamara.isNotEmpty ? FileImage(File(containerState.imagenCamara)) : null,
+                    child: containerState.imagenCamara.isEmpty
                         ? Icon(Icons.camera_alt, size: 32, color: Colors.grey[600])
                         : null,
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _modeloController,
-                readOnly: true,                              
-                showCursor: false,
-                focusNode: AlwaysDisabledFocusNode(),
-                enableInteractiveSelection: false,
-                decoration: InputDecoration(
-                  hintText: 'Modelo',
-                  hintStyle: TextStyle(color: Colors.redAccent.shade700),
-                  filled: true,
-                  fillColor: Colors.white,
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.red.shade400, width: 2),
-                  ),
-
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.red.shade300),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.red.shade300),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _precioApproxController,
-                readOnly: true,                              
-                showCursor: false,
-                focusNode: AlwaysDisabledFocusNode(),
-                enableInteractiveSelection: false,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: 'Precio aproximado',
-                  prefixText: '\$',
-                  hintStyle: TextStyle(color: Colors.redAccent.shade700),
-                  filled: true,
-                  fillColor: Colors.white,
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.red.shade400, width: 2),
-                  ),
-
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.red.shade300),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.red.shade300),
-                  ),
-                ),
-              ),
+              
               const Divider(height: 32),
         
               Text('Datos del Cliente',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
               TextField(
-                controller: _nombreController,
+                controller: nombreController,
                 decoration: InputDecoration(
                   hintText: 'Nombre de cliente',
                   hintStyle: TextStyle(color: Colors.redAccent.shade700),
@@ -194,7 +133,7 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
               ),
               const SizedBox(height: 12),
               TextField(
-                controller: _emailController,
+                controller: emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   hintText: 'Correo electrónico',
@@ -218,7 +157,7 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
               ),
               const SizedBox(height: 12),
               TextField(
-                controller: _phoneController,
+                controller: phoneController,
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                   hintText: 'Teléfono',
@@ -242,7 +181,7 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
               ),
               const SizedBox(height: 12),
               TextField(
-                controller: _ciudadController,
+                controller: ciudadController,
                 decoration: InputDecoration(
                   hintText: 'Ciudad',
                   hintStyle: TextStyle(color: Colors.redAccent.shade700),
@@ -269,10 +208,22 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Aquí puedes procesar la cotización o llamar a un provider
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Solicitud enviada')),
+                    final solicitud = SolicitudPromotor(
+                      clienteNombre: nombreController.value.text, 
+                      clienteEmail: emailController.value.text, 
+                      clienteCiudad: ciudadController.value.text, 
+                      clienteTelefono: phoneController.value.text
                     );
+                    ref.read(containerProvider.notifier).insertarSolicitud(solicitud).then((val) {
+                      final mensaje = val == 0 ? 'Ha ocurrido un error' : 'Solicitud enviada.';
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(mensaje)),
+                      );
+                    });
+                    nombreController.clear();
+                    emailController.clear();
+                    ciudadController.clear();
+                    phoneController.clear();
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
@@ -289,5 +240,11 @@ class _CotizacionState extends ConsumerState<Cotizacion> {
         ),
       ),
     );
+
   }
+}
+
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get canRequestFocus => false;
 }

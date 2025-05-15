@@ -57,10 +57,11 @@ class CardAuto extends ConsumerWidget {
                   ),
                   onTap: () {
                     // Agregando al carrito
-                    final agregado = ref.read(containerProvider.notifier).agregarCarrito(tarjetaAuto);
+                    int agregado = ref.read(containerProvider.notifier).agregarCarrito(tarjetaAuto);
+                    final mensaje = agregado == 0 ? 'Carrito ya añadido previamente' : 'Se agregó al carrito';
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Se agregó al carrito'),
+                        content: Text(mensaje),
                         duration: Duration(seconds: 5),
                         backgroundColor: Colors.red,
                       ),

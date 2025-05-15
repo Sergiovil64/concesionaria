@@ -74,11 +74,12 @@ class Catalogo extends ConsumerWidget {
                                       color: Colors.red),
                                   onPressed: () {
                                     // Agregando al carrito
-                                    final agregado = ref.read(containerProvider.notifier).agregarCarrito(auto);
+                                    int agregado = ref.read(containerProvider.notifier).agregarCarrito(auto);
+                                    final mensaje = agregado == 0 ? 'Carrito ya añadido previamente' : 'Se agregó al carrito';
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(
                                       SnackBar(
-                                        content: Text('Se agregó al carrito', style: TextStyle(color: Colors.white)),
+                                        content: Text(mensaje, style: TextStyle(color: Colors.white)),
                                         duration: Duration(seconds: 5),
                                         backgroundColor: Colors.red,
                                       ),
