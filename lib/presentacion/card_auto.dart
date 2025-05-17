@@ -22,6 +22,7 @@ class CardAuto extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       elevation: 4,
+      color: Colors.white,
       margin: EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(
@@ -78,7 +79,7 @@ class CardAuto extends ConsumerWidget {
               children: [
                 Text(
                   tarjetaAuto.nombre,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                 ),
                 SizedBox(height: 8),
                 Text(

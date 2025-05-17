@@ -3,23 +3,24 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tarea3/aplicacion/riverpod.dart';
 import 'package:tarea3/data/consultas_ia.dart';
 import 'package:tarea3/dominio/promotor.dart';
 
-class Cotizacion extends ConsumerWidget {
+class Cotizacion extends HookConsumerWidget {
   const Cotizacion({Key? key}) : super(key: key);
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ImagePicker picker = ImagePicker();
 
-    final nombreController        = TextEditingController();
-    final emailController         = TextEditingController();
-    final ciudadController        = TextEditingController();
-    final phoneController         = TextEditingController();
+    final nombreCtrl   = useTextEditingController();
+    final emailCtrl    = useTextEditingController();
+    final ciudadCtrl   = useTextEditingController();
+    final phoneCtrl    = useTextEditingController();
 
     final containerState = ref.watch(containerProvider);
     final total = containerState.vAutosCarrito.fold<int>(0, (sum, car) {
@@ -64,10 +65,10 @@ class Cotizacion extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Resumen del Carrito',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
               const SizedBox(height: 8),
               if (containerState.vAutosCarrito.isEmpty)
-                Text('No hay artículos en el carrito.')
+                Text('No hay artículos en el carrito.', style: TextStyle(color: Colors.black),)
               else
                 ...containerState.vAutosCarrito.map((car) => Container(
                   color: Colors.white,
@@ -83,11 +84,11 @@ class Cotizacion extends ConsumerWidget {
                 )),
               const SizedBox(height: 8),
               Text('Total: \$${total.toString()}', 
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black)),
               const Divider(height: 32, color: Colors.black,),
         
               Text('Cotiza con tu auto como parte de pago subiendo una fotografia',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
               const SizedBox(height: 12),
               Center(
                 child: GestureDetector(
@@ -107,10 +108,11 @@ class Cotizacion extends ConsumerWidget {
               const Divider(height: 32),
         
               Text('Datos del Cliente',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
               const SizedBox(height: 12),
               TextField(
-                controller: nombreController,
+                controller: nombreCtrl,
+                style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   hintText: 'Nombre de cliente',
                   hintStyle: TextStyle(color: Colors.redAccent.shade700),
@@ -129,11 +131,13 @@ class Cotizacion extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(color: Colors.red.shade300),
                   ),
+                  
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
-                controller: emailController,
+                controller: emailCtrl,
+                style: TextStyle(color: Colors.black),
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   hintText: 'Correo electrónico',
@@ -157,7 +161,8 @@ class Cotizacion extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               TextField(
-                controller: phoneController,
+                controller: phoneCtrl,
+                style: TextStyle(color: Colors.black),
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                   hintText: 'Teléfono',
@@ -181,7 +186,8 @@ class Cotizacion extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               TextField(
-                controller: ciudadController,
+                controller: ciudadCtrl,
+                style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   hintText: 'Ciudad',
                   hintStyle: TextStyle(color: Colors.redAccent.shade700),
@@ -209,10 +215,10 @@ class Cotizacion extends ConsumerWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     final solicitud = SolicitudPromotor(
-                      clienteNombre: nombreController.value.text, 
-                      clienteEmail: emailController.value.text, 
-                      clienteCiudad: ciudadController.value.text, 
-                      clienteTelefono: phoneController.value.text
+                      clienteNombre: nombreCtrl.value.text, 
+                      clienteEmail: emailCtrl.value.text, 
+                      clienteCiudad: ciudadCtrl.value.text, 
+                      clienteTelefono: phoneCtrl.value.text
                     );
                     ref.read(containerProvider.notifier).insertarSolicitud(solicitud).then((val) {
                       final mensaje = val == 0 ? 'Ha ocurrido un error' : 'Solicitud enviada.';
@@ -220,10 +226,10 @@ class Cotizacion extends ConsumerWidget {
                         SnackBar(content: Text(mensaje)),
                       );
                     });
-                    nombreController.clear();
-                    emailController.clear();
-                    ciudadController.clear();
-                    phoneController.clear();
+                    nombreCtrl.clear();
+                    emailCtrl.clear();
+                    ciudadCtrl.clear();
+                    phoneCtrl.clear();
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
@@ -244,7 +250,3 @@ class Cotizacion extends ConsumerWidget {
   }
 }
 
-class AlwaysDisabledFocusNode extends FocusNode {
-  @override
-  bool get canRequestFocus => false;
-}

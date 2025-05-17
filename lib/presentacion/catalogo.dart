@@ -25,6 +25,7 @@ class Catalogo extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.all(12),
               child: TextField(
+                style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   hintText: 'Buscar modelo…',
                   hintStyle: TextStyle(color: Colors.redAccent.shade700),
@@ -57,10 +58,11 @@ class Catalogo extends ConsumerWidget {
                         final auto = containerState.vListaFiltradaAutos[i];
                         return Card(
                           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          color: Colors.white,
                           child: ListTile(
                             leading: Image.asset(auto.imagenUrl, width: 72, fit: BoxFit.cover),
-                            title: Text(auto.nombre),
-                            subtitle: Text(auto.precio),
+                            title: Text(auto.nombre, style: TextStyle(color: Colors.black),),
+                            subtitle: Text(auto.precio, style: TextStyle(color: Colors.black45)),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
